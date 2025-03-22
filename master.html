@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100vh;
+      margin: 0;
+      width: 100vw;
+    }
+
+    main {
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      max-height: 90vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background-color: gainsboro;
+    }
+
+    nav {
+      background-color: blueviolet;
+      flex-grow: 1;
+    }
+
+    main {
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      flex-grow: 10;
+    }
+
+    #master {
+      flex-grow: 1;
+      background-color: white;
+      height: 100%;
+      border-right: 1px solid black;
+      max-height: 100%;
+      overflow-y: scroll;
+    }
+
+    #detail {
+      flex-grow: 6;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
+      background-color: white;
+
+    }
+
+    li{
+      list-style-type: none;
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+    nav>h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <h1>Amiibo Master Detail</h1>
+  </nav>
+  <main>
+    <section id="master">
+      <ul id="list">
+      </ul>
+    </section>
+    <section id="detail">
+      
+      <h1>Select A Pokemon</h1>
+     
+    </section>
+  </main>
+</body>
+
+<script>
+  let result = document.querySelector('#result');
+  let poke_data = [];
+
+  function renderList(data) {
+
+    let html = '';
+    let result = document.querySelector('#list');
+
+    for (let rec of data) {
+      html += `<li><a href="#" onclick=select("${rec.character}")>${rec.name}</a></li>`;
+    }
+
+
+    result.innerHTML = html;
+  }
+
+  async function getData() {
+    const response = await fetch(`https://weblabs.web.app/data/amiibo.json`);
+    data = await response.json();
+    poke_data = data.amiibo;
+    renderList(data.amiibo);
+  }
+
+  function findRecord(name){
+    for(let rec of poke_data){
+      if (rec.name == name)
+        return rec
+    }
+    return null;
+  }
+
+  function select(name) {
+    let result = document.querySelector('#detail');
+    let html = '';
+    let data = findRecord(name);
+
+    html=`
+      <h1>${data.name}</h1>
+      <img src="${data.image}" style="height:200px; width:200px"></img>
+      <h1>${data.gameSeries}</h1>
+      <h1>Release Date ${data.release.au}</h1>
+    `;
+
+    result.innerHTML = html;
+  }
+
+
+  getData();
+</script>
+
+</html>
