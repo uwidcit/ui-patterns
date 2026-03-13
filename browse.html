@@ -4,14 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>replit</title>
+  <title>Browse — UI Patterns</title>
   <style>
     * {
       box-sizing: border-box;
     }
-    
 
-    /* On mouse-over, add a deeper shadow */
     .card:hover {
       box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     }
@@ -32,12 +30,30 @@
     nav {
       background-color: blueviolet;
       flex-grow: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
     }
 
-    nav>h1 {
+    nav > h1 {
+      flex: 1;
       text-align: center;
       color: white;
-      margin-bottom: 0;
+      margin: 0;
+      padding: 10px 0;
+    }
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
 
     article {
@@ -62,7 +78,6 @@
     button:hover {
       background-color: white;
       color: blueviolet;
-      text-decoration: 1px solid blueviolet;
     }
 
     button:disabled {
@@ -93,7 +108,6 @@
       gap: 10px;
       align-items: center;
       flex-direction: row;
-      align-items: center;
       max-height: 100%;
       overflow-y: scroll;
     }
@@ -119,7 +133,7 @@
       text-align: left;
     }
 
-    .card{
+    .card {
       padding: 5px;
       text-align: center;
       background-color: white;
@@ -127,28 +141,24 @@
       flex-grow: 1;
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     }
-
   </style>
 </head>
 
 <body>
   <nav>
-    <h1>Poke Gallery</h1>
-
+    <a class="back-link" href="index.html">← Home</a>
+    <h1>Poke Browse</h1>
   </nav>
   <main>
     <section id="result">
-
     </section>
     <aside id="favourites">
-
     </aside>
   </main>
   <article>
     <button id="prev" onclick="getDetails(-8)">Prev</button>
     <button id="next" onclick="getDetails(8)">Next</button>
   </article>
-
 </body>
 
 <script>
@@ -169,29 +179,25 @@
   function addFavourite(id) {
     let item = data.find(rec => rec.id == id);
     favourites.push(item);
-    renderFavourites()
+    renderFavourites();
   }
 
   function removeFavourite(id) {
     let index = favourites.findIndex(rec => rec.id == id);
     favourites.splice(index, 1);
-    renderFavourites()
+    renderFavourites();
   }
 
   function renderPokemon() {
-
     let html = '';
-    let result = document.querySelector('#result');
     for (let rec of data) {
       html += `<div class="card">
-        <img style="height:100px; width:100px" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rec.id}.png" alt="Avatar" style="width:100%">
+        <img style="height:100px; width:100px" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${rec.id}.png" alt="${rec.name}">
         <p>Name: ${rec.name}</p>
         <button onclick="addFavourite(${rec.id})">Add to Favourites</button>
-    </div>`;
+      </div>`;
     }
     result.innerHTML = html;
-
-    //make buttons clickable again
     next.disabled = false;
     prev.disabled = false;
   }
@@ -204,14 +210,12 @@
       <div class="item">
         <p>Pokemon: ${rec.name}</p>
         <button onclick="removeFavourite(${rec.id})">Remove</button>
-      </div>
-      `;
+      </div>`;
     }
     favourites_list.innerHTML = html;
   }
 
   async function getDetails(offset) {
-
     curIndex += offset;
     let end = curIndex + 8;
     let item, response;
@@ -224,7 +228,6 @@
     }
     renderPokemon();
   }
-
 
   getDetails(0);
 </script>

@@ -33,6 +33,22 @@
     nav {
       background-color: blueviolet;
       flex-grow: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
 
     main {
@@ -67,15 +83,18 @@
     }
 
     nav>h1 {
+      flex: 1;
       text-align: center;
       color: white;
-      margin-bottom: 0;
+      margin: 0;
+      padding: 10px 0;
     }
   </style>
 </head>
 
 <body>
   <nav>
+    <a class="back-link" href="index.html">← Home</a>
     <h1>Amiibo Master Detail</h1>
   </nav>
   <main>
@@ -101,7 +120,7 @@
     let result = document.querySelector('#list');
 
     for (let rec of data) {
-      html += `<li><a href="#" onclick=select("${rec.character}")>${rec.name}</a></li>`;
+      html += `<li><a href="#" onclick="select('${rec.name}')">${rec.name}</a></li>`;
     }
 
 
