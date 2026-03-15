@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab: Carousel Pattern</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    .lab { max-width: 860px; margin: 30px auto; padding: 0 20px 60px; }
+    h2 { border-bottom: 3px solid blueviolet; padding-bottom: 6px; }
+    h3 { color: blueviolet; }
+    p, li { line-height: 1.7; }
+    pre { margin: 0; }
+    .step { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; }
+    .step pre { border: 1px solid #eee; border-radius: 4px; overflow-x: auto; }
+    .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>Lab: Carousel Pattern</h1>
+  </nav>
+
+  <div class="lab">
+    <p>The <strong>Carousel</strong> pattern shows one item at a time with Previous and Next buttons to navigate through the collection.</p>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <h2>Step 1 — HTML with Hardcoded Content</h2>
+      <p>Write the full carousel page with one hardcoded card and the three navigation buttons — no JavaScript. You need a centred <code>&lt;main&gt;</code>, a <code>#slide</code> div with a <code>.card</code> inside, and an <code>&lt;article&gt;</code> button bar below.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Carousel&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Home&lt;/a&gt;
+    &lt;h1&gt;Carousel&lt;/h1&gt;
+  &lt;/nav&gt;
+
+  &lt;main&gt;
+
+    &lt;div id="slide"&gt;
+      &lt;div class="card"&gt;
+        &lt;img src="https://pokedextr.uwista.dev/images/25.png" alt="pikachu"&gt;
+        &lt;h2&gt;Pikachu&lt;/h2&gt;
+        &lt;p&gt;#25 — Electric&lt;/p&gt;
+        &lt;p&gt;HP: 35 | Attack: 55 | Defense: 40&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;article&gt;
+      &lt;button id="prev-btn" disabled&gt;Previous&lt;/button&gt;
+      &lt;button id="random-btn"&gt;Random&lt;/button&gt;
+      &lt;button id="next-btn"&gt;Next&lt;/button&gt;
+    &lt;/article&gt;
+
+  &lt;/main&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <div class="note">Open in a browser — you should see the Pikachu card centred on the page with three buttons below. Buttons do nothing yet.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h2>Step 2 — CSS Styling</h2>
+      <p>Add a <code>&lt;style&gt;</code> block in <code>&lt;head&gt;</code>. Centre <code>&lt;main&gt;</code> with <code>text-align: center</code>. Style the card with a border and the buttons in a flex row.</p>
+<pre><code class="language-html">&lt;style&gt;
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 0; }
+
+  nav {
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  nav h1 { color: white; margin: 0; flex: 1; }
+  nav a  { color: white; text-decoration: none;
+           border: 2px solid white; padding: 5px 14px; }
+
+  main {
+    text-align: center;
+    padding: 30px;
+  }
+
+  #slide .card {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 260px;
+    background: white;
+  }
+  #slide .card img { width: 150px; height: 150px; }
+  #slide .card h2  { text-transform: capitalize; margin: 10px 0 5px; }
+  #slide .card p   { margin: 4px 0; }
+
+  article {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  article button {
+    padding: 8px 20px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: white;
+  }
+  button:disabled { opacity: 0.5; }
+&lt;/style&gt;</code></pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h2>Step 3 — Dynamic Rendering with JavaScript</h2>
+      <p>Remove the hardcoded <code>.card</code> div from <code>#slide</code> (leave it empty). Add a <code>&lt;script&gt;</code> tag before <code>&lt;/body&gt;</code>.</p>
+      <p><strong>Interactive idea:</strong> store the current position in <code>currentIndex</code>; every navigation action updates that index and calls <code>renderSlide()</code>.</p>
+
+      <h3>3a — State and render function</h3>
+<pre><code class="language-javascript">let allPokemon   = [];
+let currentIndex = 0;
+
+function renderSlide() {
+  // Read current record by index.
+  const pokemon = allPokemon[currentIndex];
+  if (!pokemon) return;
+
+  // Rebuild slide markup from current record.
+  document.querySelector('#slide').innerHTML = `
+    &lt;div class="card"&gt;
+      &lt;img src="${pokemon.image}" alt="${pokemon.name}"&gt;
+      &lt;h2&gt;${pokemon.name}&lt;/h2&gt;
+      &lt;p&gt;#${pokemon.id} — ${pokemon.type1}${pokemon.type2 ? ' / ' + pokemon.type2 : ''}&lt;/p&gt;
+      &lt;p&gt;HP: ${pokemon.hp} | Attack: ${pokemon.attack} | Defense: ${pokemon.defense}&lt;/p&gt;
+    &lt;/div&gt;
+  `;
+
+  // Disable buttons at list boundaries.
+  document.querySelector('#prev-btn').disabled = currentIndex === 0;
+  document.querySelector('#next-btn').disabled = currentIndex === allPokemon.length - 1;
+}</code></pre>
+
+      <h3>3b — Navigation and events</h3>
+<pre><code class="language-javascript">function navigate(direction) {
+  // direction: -1 for previous, +1 for next
+  currentIndex += direction;
+  renderSlide();
+}
+
+function goToRandom() {
+  // Pick any valid index in the loaded array.
+  currentIndex = Math.floor(Math.random() * allPokemon.length);
+  renderSlide();
+}
+
+function handleKey(e) {
+  // Keyboard shortcuts for the same navigation actions.
+  if (e.key === 'ArrowLeft')  navigate(-1);
+  if (e.key === 'ArrowRight') navigate(1);
+}</code></pre>
+      <p>Bind controls directly in HTML:</p>
+<pre><code class="language-html">&lt;body onkeydown="handleKey(event)"&gt;
+  ...
+  &lt;button id="prev-btn" onclick="navigate(-1)"&gt;Previous&lt;/button&gt;
+  &lt;button id="random-btn" onclick="goToRandom()"&gt;Random&lt;/button&gt;
+  &lt;button id="next-btn" onclick="navigate(1)"&gt;Next&lt;/button&gt;
+&lt;/body&gt;</code></pre>
+
+      <h3>3c — Load data</h3>
+<pre><code class="language-javascript">async function loadPokemon() {
+  // Load all records before first render.
+  for (let i = 1; i &lt;= 20; i++) {
+    const res  = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+    const data = await res.json();
+    allPokemon.push(data);
+  }
+  renderSlide();   // call AFTER all data loaded so button disabled state is correct
+}
+
+loadPokemon();</code></pre>
+      <h3>3d — Interactive flow (what runs on each action)</h3>
+      <ul>
+        <li>Click Previous/Next (or press arrow keys): update <code>currentIndex</code> through <code>navigate()</code>, then re-render slide.</li>
+        <li>Click Random: set <code>currentIndex</code> to a random valid value, then re-render slide.</li>
+        <li><code>renderSlide()</code> rebuilds the card HTML and updates button disabled states each time.</li>
+      </ul>
+      <div class="note"><strong>Important:</strong> Call <code>renderSlide()</code> only after all data is loaded. If you call it inside the loop, <code>allPokemon.length - 1</code> keeps changing and the Next button may stay incorrectly disabled.</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

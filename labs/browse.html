@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab: Browse Pattern</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    .lab { max-width: 860px; margin: 30px auto; padding: 0 20px 60px; }
+    h2 { border-bottom: 3px solid blueviolet; padding-bottom: 6px; }
+    h3 { color: blueviolet; }
+    p, li { line-height: 1.7; }
+    pre { margin: 0; }
+    .step { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; }
+    .step pre { border: 1px solid #eee; border-radius: 4px; overflow-x: auto; }
+    .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>Lab: Browse Pattern</h1>
+  </nav>
+
+  <div class="lab">
+    <p>The <strong>Browse</strong> pattern lets users page through a large collection and bookmark items they want to keep. The page is split: the main area shows paginated cards, and a sidebar shows the bookmarks list. Bookmarks are stored in a plain JavaScript array — no database or <code>localStorage</code> needed.</p>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <h2>Step 1 — HTML with Hardcoded Content</h2>
+      <p>Write the full two-column layout with hardcoded cards, a hardcoded bookmark entry, and pagination buttons — no JavaScript. You need a <code>#content-area</code> for cards, a <code>#bookmarks</code> sidebar, and a <code>.pagination</code> bar outside <code>&lt;main&gt;</code>.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Browse&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Home&lt;/a&gt;
+    &lt;h1&gt;Browse&lt;/h1&gt;
+    &lt;span id="bookmark-count"&gt;1 Bookmarked&lt;/span&gt;
+  &lt;/nav&gt;
+
+  &lt;main&gt;
+
+    &lt;div id="content-area"&gt;
+
+      &lt;div class="card"&gt;
+        &lt;img src="https://pokedextr.uwista.dev/images/1.png" alt="bulbasaur"&gt;
+        &lt;p&gt;&lt;strong&gt;Bulbasaur&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Grass / Poison&lt;/p&gt;
+        &lt;button&gt;☆ Save&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class="card"&gt;
+        &lt;img src="https://pokedextr.uwista.dev/images/4.png" alt="charmander"&gt;
+        &lt;p&gt;&lt;strong&gt;Charmander&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Fire&lt;/p&gt;
+        &lt;button&gt;★ Remove&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class="card"&gt;
+        &lt;img src="https://pokedextr.uwista.dev/images/7.png" alt="squirtle"&gt;
+        &lt;p&gt;&lt;strong&gt;Squirtle&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Water&lt;/p&gt;
+        &lt;button&gt;☆ Save&lt;/button&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;div id="bookmarks"&gt;
+      &lt;h2&gt;Bookmarks&lt;/h2&gt;
+      &lt;button&gt;Clear All&lt;/button&gt;
+      &lt;div id="bookmarks-list"&gt;
+        &lt;div class="bookmark-item"&gt;
+          &lt;img src="https://pokedextr.uwista.dev/images/4.png" alt="charmander"&gt;
+          &lt;span&gt;Charmander&lt;/span&gt;
+          &lt;button&gt;Remove&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/main&gt;
+
+  &lt;div class="pagination"&gt;
+    &lt;button disabled&gt;Previous&lt;/button&gt;
+    &lt;div id="page-numbers"&gt;
+      &lt;button class="page-btn active"&gt;1&lt;/button&gt;
+      &lt;button class="page-btn"&gt;2&lt;/button&gt;
+      &lt;button class="page-btn"&gt;3&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;button&gt;Next&lt;/button&gt;
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <div class="note">Open in a browser — you should see cards on the left, a bookmark sidebar on the right, and pagination buttons at the bottom. Nothing is interactive yet.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h2>Step 2 — CSS Styling</h2>
+      <p>Add a <code>&lt;style&gt;</code> block in <code>&lt;head&gt;</code>. Use <code>display: flex</code> on <code>&lt;main&gt;</code> so content and bookmarks sit side by side. Set a fixed width on <code>#bookmarks</code> with a left border.</p>
+<pre><code class="language-html">&lt;style&gt;
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 0; }
+
+  nav {
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  nav h1   { color: white; margin: 0; flex: 1; }
+  nav a    { color: white; text-decoration: none;
+             border: 2px solid white; padding: 5px 14px; }
+  nav span { color: white; }
+
+  main {
+    display: flex;
+    height: calc(100vh - 80px);
+  }
+
+  #content-area {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    align-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 140px;
+    text-align: center;
+    background: white;
+  }
+  .card img    { width: 80px; height: 80px; }
+  .card p      { margin: 3px 0; font-size: 0.9rem; text-transform: capitalize; }
+  .card button { margin-top: 5px; padding: 3px 8px; cursor: pointer; }
+
+  #bookmarks {
+    width: 240px;
+    border-left: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  #bookmarks h2 { margin: 0 0 10px 0; font-size: 1rem; }
+
+  .bookmark-item {
+    border: 1px solid #eee;
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+  .bookmark-item img { width: 40px; height: 40px; vertical-align: middle; }
+
+  .pagination {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    align-items: center;
+    background: #f5f5f5;
+    flex-wrap: wrap;
+  }
+  .pagination button, .page-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: white;
+  }
+  .page-btn.active {
+    background: blueviolet;
+    color: white;
+    border-color: blueviolet;
+  }
+  button:disabled { opacity: 0.5; }
+&lt;/style&gt;</code></pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h2>Step 3 — Dynamic Rendering with JavaScript</h2>
+      <p>Remove all hardcoded cards and bookmark items. Leave <code>#content-area</code> and <code>#bookmarks-list</code> empty, clear the hardcoded page buttons from <code>#page-numbers</code>, then add a <code>&lt;script&gt;</code> tag before <code>&lt;/body&gt;</code>.</p>
+      <p><strong>Interactive idea:</strong> maintain two arrays (<code>allPokemon</code> and <code>bookmarks</code>). Every user action updates one array, then re-renders the affected UI blocks.</p>
+
+      <h3>3a — State variables</h3>
+<pre><code class="language-javascript">let allPokemon  = [];
+let bookmarks   = [];    // plain array — no localStorage
+let currentPage  = 1;
+let itemsPerPage = 12;</code></pre>
+
+      <h3>3b — Render cards</h3>
+<pre><code class="language-javascript">function renderContent() {
+  const area  = document.querySelector('#content-area');
+  // Calculate current page slice.
+  const start = (currentPage - 1) * itemsPerPage;
+  const page  = allPokemon.slice(start, start + itemsPerPage);
+
+  // Build card HTML from page data.
+  let html = '';
+  for (let p of page) {
+    // Check if this card is already bookmarked.
+    const saved = bookmarks.some(b => b.id === p.id);
+    html += `&lt;div class="card"&gt;
+      &lt;img src="${p.image}" alt="${p.name}"&gt;
+      &lt;p&gt;&lt;strong&gt;${p.name}&lt;/strong&gt;&lt;/p&gt;
+      &lt;p&gt;${p.type1}${p.type2 ? ' / ' + p.type2 : ''}&lt;/p&gt;
+      &lt;button onclick="toggleBookmark(${p.id})"&gt;
+        ${saved ? '★ Remove' : '☆ Save'}
+      &lt;/button&gt;
+    &lt;/div&gt;`;
+  }
+
+  area.innerHTML = html;
+  // Keep paging UI in sync with current page.
+  updatePagination();
+}</code></pre>
+
+      <h3>3c — Bookmarking</h3>
+<pre><code class="language-javascript">function toggleBookmark(id) {
+  // Get clicked object and check if saved.
+  const pokemon = allPokemon.find(p => p.id === id);
+  const index   = bookmarks.findIndex(b => b.id === id);
+
+  if (index === -1) {
+    // Not saved yet: add it.
+    bookmarks.push(pokemon);
+  } else {
+    // Already saved: remove it.
+    bookmarks.splice(index, 1);
+  }
+
+  // Re-render both main list and sidebar.
+  renderContent();
+  renderBookmarks();
+}
+
+function removeBookmark(id) {
+  // Remove one item from bookmark array.
+  bookmarks = bookmarks.filter(b => b.id !== id);
+  renderContent();
+  renderBookmarks();
+}
+
+function clearBookmarks() {
+  // Reset to empty list.
+  bookmarks = [];
+  renderContent();
+  renderBookmarks();
+}
+
+function renderBookmarks() {
+  const list  = document.querySelector('#bookmarks-list');
+  const count = document.querySelector('#bookmark-count');
+  // Reflect bookmark count in the header.
+  count.textContent = `${bookmarks.length} Bookmarked`;
+
+  if (bookmarks.length === 0) {
+    list.innerHTML = '&lt;p&gt;None yet.&lt;/p&gt;';
+    return;
+  }
+
+  let html = ''; // sidebar item markup
+  for (let p of bookmarks) {
+    html += `&lt;div class="bookmark-item"&gt;
+      &lt;img src="${p.image}" alt="${p.name}"&gt;
+      &lt;span style="text-transform:capitalize"&gt;${p.name}&lt;/span&gt;
+      &lt;button onclick="removeBookmark(${p.id})"&gt;Remove&lt;/button&gt;
+    &lt;/div&gt;`;
+  }
+  list.innerHTML = html;
+}</code></pre>
+
+      <h3>3d — Pagination</h3>
+<pre><code class="language-javascript">function updatePagination() {
+  // Total pages depends on dataset size.
+  const total   = Math.ceil(allPokemon.length / itemsPerPage);
+  const prevBtn = document.querySelector('#prev-btn');
+  const nextBtn = document.querySelector('#next-btn');
+
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === total;
+
+  let html = ''; // numbered page buttons
+  for (let i = 1; i &lt;= total; i++) {
+    html += `&lt;button class="page-btn ${i === currentPage ? 'active' : ''}"
+                     onclick="goToPage(${i})"&gt;${i}&lt;/button&gt;`;
+  }
+  document.querySelector('#page-numbers').innerHTML = html;
+}
+
+function goToPage(page) {
+  const total = Math.ceil(allPokemon.length / itemsPerPage);
+  // Ignore invalid page clicks.
+  if (page &lt; 1 || page &gt; total) return;
+  currentPage = page;
+  renderContent();
+}
+</code></pre>
+      <p>Bind Previous and Next directly in HTML:</p>
+<pre><code class="language-html">&lt;button id="prev-btn" onclick="goToPage(currentPage - 1)"&gt;Previous&lt;/button&gt;
+&lt;button id="next-btn" onclick="goToPage(currentPage + 1)"&gt;Next&lt;/button&gt;</code></pre>
+
+      <h3>3e — Load data</h3>
+<pre><code class="language-javascript">async function loadPokemon() {
+  // Fetch dataset and render progressively.
+  for (let i = 1; i &lt;= 50; i++) {
+    const res  = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+    const data = await res.json();
+    allPokemon.push(data);
+    if (i % 12 === 0 || i === 1) renderContent();
+  }
+  renderContent();
+  renderBookmarks();
+}
+
+loadPokemon();</code></pre>
+      <h3>3f — Interactive flow (what runs on each action)</h3>
+      <ul>
+        <li>Click Save/Remove on a card: <code>toggleBookmark(id)</code> updates <code>bookmarks</code>, then calls <code>renderContent()</code> and <code>renderBookmarks()</code>.</li>
+        <li>Click Remove/Clear All in sidebar: update <code>bookmarks</code>, then re-render both content and sidebar.</li>
+        <li>Click page buttons: <code>goToPage(page)</code> updates <code>currentPage</code>, then calls <code>renderContent()</code> (which also refreshes pagination).</li>
+      </ul>
+      <div class="note">Clicking ☆ Save on any card adds it to the bookmarks panel. The ★ Remove button and the sidebar Remove link both update the same <code>bookmarks</code> array — no page reload needed.</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

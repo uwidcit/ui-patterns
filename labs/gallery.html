@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab: Gallery Pattern</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    .lab { max-width: 860px; margin: 30px auto; padding: 0 20px 60px; }
+    h2 { border-bottom: 3px solid blueviolet; padding-bottom: 6px; }
+    h3 { color: blueviolet; }
+    p, li { line-height: 1.7; }
+    pre { margin: 0; }
+    .step { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; }
+    .step pre { border: 1px solid #eee; border-radius: 4px; overflow-x: auto; }
+    .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>Lab: Gallery Pattern</h1>
+  </nav>
+
+  <div class="lab">
+    <p>In this lab you will build a <strong>Gallery</strong> page step by step. A gallery displays a collection of items as cards in a grid, with search and filter controls.</p>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <h2>Step 1 — HTML with Hardcoded Content</h2>
+      <p>Write the full page structure with real hardcoded cards. No JavaScript at all — just HTML. You need a <code>&lt;nav&gt;</code> with a search input, a <code>.filters</code> bar with filter buttons, and a <code>#gallery</code> div containing card elements.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Gallery&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Home&lt;/a&gt;
+    &lt;h1&gt;Gallery&lt;/h1&gt;
+    &lt;input type="text" id="search" placeholder="Search..."&gt;
+  &lt;/nav&gt;
+
+  &lt;div class="filters"&gt;
+    &lt;button class="active"&gt;All&lt;/button&gt;
+    &lt;button&gt;Fire&lt;/button&gt;
+    &lt;button&gt;Water&lt;/button&gt;
+    &lt;button&gt;Grass&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div id="gallery"&gt;
+
+    &lt;div class="card"&gt;
+      &lt;img src="https://pokedextr.uwista.dev/images/1.png" alt="bulbasaur"&gt;
+      &lt;p&gt;&lt;strong&gt;Bulbasaur&lt;/strong&gt;&lt;/p&gt;
+      &lt;p&gt;Grass / Poison&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="card"&gt;
+      &lt;img src="https://pokedextr.uwista.dev/images/4.png" alt="charmander"&gt;
+      &lt;p&gt;&lt;strong&gt;Charmander&lt;/strong&gt;&lt;/p&gt;
+      &lt;p&gt;Fire&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class="card"&gt;
+      &lt;img src="https://pokedextr.uwista.dev/images/7.png" alt="squirtle"&gt;
+      &lt;p&gt;&lt;strong&gt;Squirtle&lt;/strong&gt;&lt;/p&gt;
+      &lt;p&gt;Water&lt;/p&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <div class="note">Open in a browser — you should see three unstyled cards. No JavaScript is needed to verify the structure.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h2>Step 2 — CSS Styling</h2>
+      <p>Add a <code>&lt;style&gt;</code> block inside <code>&lt;head&gt;</code>. Use <code>display: flex; flex-wrap: wrap</code> on <code>#gallery</code> so cards sit side by side. Style the <code>.active</code> class on filter buttons.</p>
+<pre><code class="language-html">&lt;style&gt;
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 0; }
+
+  nav {
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  nav h1 { color: white; margin: 0; flex: 1; }
+  nav a  { color: white; text-decoration: none;
+           border: 2px solid white; padding: 5px 14px; }
+  nav input { padding: 5px; }
+
+  .filters { padding: 10px; display: flex; gap: 8px; }
+  .filters button { padding: 6px 14px; cursor: pointer;
+                    border: 1px solid #ccc; background: white; }
+  .filters button.active { background: blueviolet; color: white; }
+
+  #gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    background: white;
+  }
+  .card img { width: 90px; height: 90px; }
+  .card p   { margin: 4px 0; text-transform: capitalize; }
+&lt;/style&gt;</code></pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h2>Step 3 — Dynamic Rendering with JavaScript</h2>
+      <p>Remove the three hardcoded <code>.card</code> divs from <code>#gallery</code> (leave it empty). Add a <code>&lt;script&gt;</code> tag before <code>&lt;/body&gt;</code> and drive all content from JavaScript.</p>
+      <p><strong>Important pattern:</strong> do not filter inside the render function. Instead, build a new array first (<code>filteredList</code>) and pass it into <code>renderGallery(filteredList)</code>.</p>
+
+      <h3>3a — Load data from the API</h3>
+<pre><code class="language-javascript">let allPokemon = [];
+let currentFilter = 'all';
+let searchQuery = '';
+
+async function loadPokemon() {
+  // Fetch a small starter dataset.
+  for (let i = 1; i &lt;= 20; i++) {
+    const response = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+    const data = await response.json();
+    allPokemon.push(data);
+    refreshGallery();   // re-render while data is loading
+  }
+}
+
+loadPokemon();</code></pre>
+
+      <h3>3b — Build a new filtered array, then render</h3>
+<pre><code class="language-javascript">function renderGallery(list) {
+  const gallery = document.querySelector('#gallery');
+
+  // Convert data objects into card HTML.
+  let html = '';
+  for (let p of list) {
+    html += `&lt;div class="card"&gt;
+      &lt;img src="${p.image}" alt="${p.name}"&gt;
+      &lt;p&gt;&lt;strong&gt;${p.name}&lt;/strong&gt;&lt;/p&gt;
+      &lt;p&gt;${p.type1}${p.type2 ? ' / ' + p.type2 : ''}&lt;/p&gt;
+    &lt;/div&gt;`;
+  }
+
+  gallery.innerHTML = html;
+}
+
+function getFilteredList() {
+  // Start from the full source array.
+  let filteredList = [...allPokemon];
+
+  // 1) Search by name text.
+  filteredList = filteredList.filter(p =&gt;
+    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // 2) Filter by selected type.
+  if (currentFilter !== 'all') {
+    filteredList = filteredList.filter(p =&gt;
+      p.type1 === currentFilter || p.type2 === currentFilter
+    );
+  }
+
+  return filteredList;
+}
+
+function refreshGallery() {
+  // Derive data first, then render.
+  const filteredList = getFilteredList();
+  renderGallery(filteredList);
+}</code></pre>
+
+      <h3>3c — Wire up search and filter buttons</h3>
+<pre><code class="language-javascript">function handleSearch(inputElement) {
+  // Keep state in sync with input text.
+  searchQuery = inputElement.value;
+  refreshGallery();
+}
+
+function setFilter(type, buttonElement) {
+  // Update filter state.
+  currentFilter = type;
+  // Clear old active styles.
+  document.querySelectorAll('.filters button').forEach(btn =&gt; {
+    btn.classList.remove('active');
+  });
+  // Mark the clicked button.
+  buttonElement.classList.add('active');
+  refreshGallery();
+}</code></pre>
+
+      <p>Update the filter buttons in the HTML to call <code>setFilter()</code>:</p>
+<pre><code class="language-html">&lt;div class="filters"&gt;
+  &lt;button class="active" onclick="setFilter('all', this)"&gt;All&lt;/button&gt;
+  &lt;button onclick="setFilter('fire', this)"&gt;Fire&lt;/button&gt;
+  &lt;button onclick="setFilter('water', this)"&gt;Water&lt;/button&gt;
+  &lt;button onclick="setFilter('grass', this)"&gt;Grass&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      <p>Also update the search input to bind directly in HTML:</p>
+    <pre><code class="language-html">&lt;input type="text" id="search" placeholder="Search..." oninput="handleSearch(this)"&gt;</code></pre>
+      <p><strong>What is <code>this</code> here?</strong> In an inline <code>onclick</code>, <code>this</code> means the exact button that was clicked. So <code>setFilter('fire', this)</code> passes two things: the filter value (<code>'fire'</code>) and the clicked button element. Inside <code>setFilter</code>, that second value is used as <code>buttonElement.classList.add('active')</code> so only the clicked button gets the active style.</p>
+      <h3>3d — Interactive flow (what runs on each action)</h3>
+      <ul>
+        <li>User types in search: update <code>searchQuery</code> → call <code>refreshGallery()</code>.</li>
+        <li>User clicks a filter button: update <code>currentFilter</code> and active button style → call <code>refreshGallery()</code>.</li>
+        <li><code>refreshGallery()</code> always does two steps: <code>getFilteredList()</code> then <code>renderGallery(filteredList)</code>.</li>
+      </ul>
+      <div class="note">The gallery now loads from the API, filters by type, and filters by search text — all without a page reload.</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

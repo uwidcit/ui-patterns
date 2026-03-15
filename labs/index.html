@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UI Pattern Labs</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f9f9f9; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    main { max-width: 700px; margin: 40px auto; padding: 0 20px; }
+    h2 { margin-bottom: 5px; }
+    p { color: #555; margin-top: 0; }
+    .lab-list { list-style: none; padding: 0; }
+    .lab-list li { margin-bottom: 15px; }
+    .lab-list a {
+      display: block;
+      padding: 15px 20px;
+      border: 1px solid #ccc;
+      background: white;
+      text-decoration: none;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    .lab-list a:hover { background: #f0eaff; border-color: blueviolet; }
+    .lab-list span { display: block; font-size: 0.85rem; color: #777; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>UI Pattern Labs</h1>
+  </nav>
+  <main>
+    <h2>Code Labs</h2>
+    <p>Each lab walks through building a UI pattern step-by-step: HTML structure, CSS styling, hardcoded content, then dynamic data via AJAX.</p>
+    <ul class="lab-list">
+      <li>
+        <a href="gallery.html">
+          Lab 1 — Gallery Pattern
+          <span>Grid of cards with search and filter buttons</span>
+        </a>
+      </li>
+      <li>
+        <a href="master-detail.html">
+          Lab 2 — Master-Detail Pattern
+          <span>Sidebar list with detail pane and tabs</span>
+        </a>
+      </li>
+      <li>
+        <a href="table.html">
+          Lab 3 — Table Pattern
+          <span>Sortable table with pagination</span>
+        </a>
+      </li>
+      <li>
+        <a href="carousel.html">
+          Lab 4 — Carousel Pattern
+          <span>Single-item slideshow with Next / Prev</span>
+        </a>
+      </li>
+      <li>
+        <a href="browse.html">
+          Lab 5 — Browse Pattern
+          <span>Paginated card grid with bookmarking sidebar</span>
+        </a>
+      </li>
+    </ul>
+  </main>
+</body>
+</html>

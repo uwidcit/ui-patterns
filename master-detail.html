@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Master Detail</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100vh;
+      margin: 0;
+      width: 100vw;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background-color: blueviolet;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      border: 2px solid white;
+      padding: 5px 14px;
+      text-align: center;
+    }
+
+    nav h1 {
+      text-align: center;
+      color: white;
+      margin: 0;
+      padding: 10px;
+    }
+
+    main {
+      display: flex;
+      flex-direction: row;
+      flex-grow: 1;
+      max-height: 90vh;
+    }
+
+    #master {
+      flex-grow: 1;
+      background-color: white;
+      border-right: 1px solid black;
+      max-height: 100%;
+      overflow-y: scroll;
+    }
+
+    #detail {
+      flex-grow: 6;
+      padding: 20px;
+      text-align: center;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    li:hover {
+      background-color: #eee;
+    }
+
+    li.active {
+      background-color: blueviolet;
+      color: white;
+    }
+
+    li img {
+      width: 36px;
+      height: 36px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    #detail img {
+      height: 200px;
+      width: 200px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      justify-content: center;
+    }
+
+    .tab {
+      padding: 6px 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: white;
+    }
+
+    .tab.active {
+      background-color: blueviolet;
+      color: white;
+      border-color: blueviolet;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+
+    td, th {
+      border: 1px solid #ccc;
+      padding: 8px 16px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <h1>Master Detail</h1>
+  </nav>
+  <main>
+    <section id="master">
+      <ul id="list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+    <section id="detail">
+      <p>Select a Pokemon</p>
+    </section>
+  </main>
+
+  <script>
+    let allPokemon = [];
+    let currentTab = 'info';
+    let currentId = null;
+
+    function renderList(data) {
+      let html = '';
+      for (let rec of data) {
+        html += `<li onclick="select(${rec.id})" data-id="${rec.id}">
+          <img src="${rec.image}">${rec.name}
+        </li>`;
+      }
+      document.querySelector('#list').innerHTML = html;
+    }
+
+    function renderDetail(pokemon) {
+      let html = `
+        <img src="${pokemon.image}">
+        <h2>${pokemon.name}</h2>
+        <p>#${pokemon.id} &nbsp; Type: ${pokemon.type1}${pokemon.type2 ? ' / ' + pokemon.type2 : ''}</p>
+
+        <div class="tabs">
+          <button class="tab ${currentTab === 'info' ? 'active' : ''}" onclick="setTab('info')">Info</button>
+          <button class="tab ${currentTab === 'stats' ? 'active' : ''}" onclick="setTab('stats')">Stats</button>
+        </div>
+
+        <div class="tab-content ${currentTab === 'info' ? 'active' : ''}">
+          <table>
+            <tr><th>ID</th><td>${pokemon.id}</td></tr>
+            <tr><th>Name</th><td>${pokemon.name}</td></tr>
+            <tr><th>Type 1</th><td>${pokemon.type1}</td></tr>
+            <tr><th>Type 2</th><td>${pokemon.type2 || '-'}</td></tr>
+          </table>
+        </div>
+
+        <div class="tab-content ${currentTab === 'stats' ? 'active' : ''}">
+          <table>
+            <tr><th>HP</th><td>${pokemon.hp}</td></tr>
+            <tr><th>Attack</th><td>${pokemon.attack}</td></tr>
+            <tr><th>Defense</th><td>${pokemon.defense}</td></tr>
+            <tr><th>Speed</th><td>${pokemon.speed}</td></tr>
+          </table>
+        </div>
+      `;
+      document.querySelector('#detail').innerHTML = html;
+    }
+
+    function select(id) {
+      currentId = id;
+      const pokemon = allPokemon.find(p => p.id === id);
+      document.querySelectorAll('#list li').forEach(li => {
+        li.classList.toggle('active', parseInt(li.dataset.id) === id);
+      });
+      renderDetail(pokemon);
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      select(currentId);
+    }
+
+    async function loadPokemon() {
+      for (let i = 1; i <= 30; i++) {
+        const response = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+        const data = await response.json();
+        allPokemon.push(data);
+      }
+      renderList(allPokemon);
+    }
+
+    loadPokemon();
+  </script>
+</body>
+</html>

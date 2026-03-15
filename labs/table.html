@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab: Table Pattern</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    .lab { max-width: 860px; margin: 30px auto; padding: 0 20px 60px; }
+    h2 { border-bottom: 3px solid blueviolet; padding-bottom: 6px; }
+    h3 { color: blueviolet; }
+    p, li { line-height: 1.7; }
+    pre { margin: 0; }
+    .step { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; }
+    .step pre { border: 1px solid #eee; border-radius: 4px; overflow-x: auto; }
+    .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>Lab: Table Pattern</h1>
+  </nav>
+
+  <div class="lab">
+    <p>The <strong>Table</strong> pattern displays data in rows and columns with clickable column headers for sorting and numbered pagination buttons at the bottom.</p>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <h2>Step 1 — HTML with Hardcoded Content</h2>
+      <p>Write the full table page with real hardcoded rows and pagination buttons — no JavaScript. You need a <code>&lt;table&gt;</code> with <code>&lt;thead&gt;</code> header columns and <code>&lt;tbody&gt;</code> data rows, plus a pagination bar below.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Table&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Home&lt;/a&gt;
+    &lt;h1&gt;Table&lt;/h1&gt;
+  &lt;/nav&gt;
+
+  &lt;table id="data-table"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;ID&lt;/th&gt;
+        &lt;th&gt;Name&lt;/th&gt;
+        &lt;th&gt;Type&lt;/th&gt;
+        &lt;th&gt;HP&lt;/th&gt;
+        &lt;th&gt;Attack&lt;/th&gt;
+        &lt;th&gt;Defense&lt;/th&gt;
+        &lt;th&gt;Speed&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody id="table-body"&gt;
+      &lt;tr&gt;
+        &lt;td&gt;1&lt;/td&gt;
+        &lt;td&gt;Bulbasaur&lt;/td&gt;
+        &lt;td&gt;Grass / Poison&lt;/td&gt;
+        &lt;td&gt;45&lt;/td&gt;&lt;td&gt;49&lt;/td&gt;&lt;td&gt;49&lt;/td&gt;&lt;td&gt;45&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;4&lt;/td&gt;
+        &lt;td&gt;Charmander&lt;/td&gt;
+        &lt;td&gt;Fire&lt;/td&gt;
+        &lt;td&gt;39&lt;/td&gt;&lt;td&gt;52&lt;/td&gt;&lt;td&gt;43&lt;/td&gt;&lt;td&gt;65&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;7&lt;/td&gt;
+        &lt;td&gt;Squirtle&lt;/td&gt;
+        &lt;td&gt;Water&lt;/td&gt;
+        &lt;td&gt;44&lt;/td&gt;&lt;td&gt;48&lt;/td&gt;&lt;td&gt;65&lt;/td&gt;&lt;td&gt;43&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+
+  &lt;div class="pagination"&gt;
+    &lt;button disabled&gt;Previous&lt;/button&gt;
+    &lt;div id="page-numbers"&gt;
+      &lt;button class="page-btn active"&gt;1&lt;/button&gt;
+      &lt;button class="page-btn"&gt;2&lt;/button&gt;
+      &lt;button class="page-btn"&gt;3&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;button&gt;Next&lt;/button&gt;
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <div class="note">Open in a browser — you should see a plain table with three rows and pagination buttons. Clicking does nothing yet.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h2>Step 2 — CSS Styling</h2>
+      <p>Add a <code>&lt;style&gt;</code> block in <code>&lt;head&gt;</code>. Add borders to cells, make header cells look clickable, and style active pagination buttons.</p>
+<pre><code class="language-html">&lt;style&gt;
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 0; }
+
+  nav {
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  nav h1 { color: white; margin: 0; flex: 1; }
+  nav a  { color: white; text-decoration: none;
+           border: 2px solid white; padding: 5px 14px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  thead th {
+    background: #f0f0f0;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th.sort-asc::after  { content: ' ▲'; }
+  thead th.sort-desc::after { content: ' ▼'; }
+
+  .pagination {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pagination button, .page-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: white;
+  }
+  .page-btn.active {
+    background: blueviolet;
+    color: white;
+    border-color: blueviolet;
+  }
+  button:disabled { opacity: 0.5; }
+&lt;/style&gt;</code></pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h2>Step 3 — Dynamic Rendering with JavaScript</h2>
+      <p>Remove the hardcoded <code>&lt;tr&gt;</code> rows and the hardcoded page buttons. Leave <code>&lt;tbody&gt;</code> and <code>#page-numbers</code> empty, then add a <code>&lt;script&gt;</code> tag before <code>&lt;/body&gt;</code>.</p>
+      <p><strong>Interactive idea:</strong> keep sorting and pagination state in variables, then call one render function after every interaction.</p>
+
+      <h3>3a — State variables</h3>
+<pre><code class="language-javascript">let allPokemon    = [];
+let currentPage   = 1;
+let itemsPerPage  = 10;
+let sortColumn    = 'id';
+let sortDirection = 'asc';</code></pre>
+
+      <h3>3b — Render the table</h3>
+<pre><code class="language-javascript">function renderTable() {
+  // 1) Create a sorted copy (do not mutate source array).
+  let sorted = [...allPokemon].sort((a, b) => {
+    let valA = a[sortColumn];
+    let valB = b[sortColumn];
+    if (typeof valA === 'string') valA = valA.toLowerCase();
+    if (typeof valB === 'string') valB = valB.toLowerCase();
+    if (valA &lt; valB) return sortDirection === 'asc' ? -1 : 1;
+    if (valA &gt; valB) return sortDirection === 'asc' ?  1 : -1;
+    return 0;
+  });
+
+  // 2) Slice only rows for the current page.
+  const start    = (currentPage - 1) * itemsPerPage;
+  const pageData = sorted.slice(start, start + itemsPerPage);
+
+  // 3) Convert page rows to HTML.
+  let html = '';
+  for (let p of pageData) {
+    html += `&lt;tr&gt;
+      &lt;td&gt;${p.id}&lt;/td&gt;
+      &lt;td&gt;${p.name}&lt;/td&gt;
+      &lt;td&gt;${p.type1}${p.type2 ? ' / ' + p.type2 : ''}&lt;/td&gt;
+      &lt;td&gt;${p.hp}&lt;/td&gt;
+      &lt;td&gt;${p.attack}&lt;/td&gt;
+      &lt;td&gt;${p.defense}&lt;/td&gt;
+      &lt;td&gt;${p.speed}&lt;/td&gt;
+    &lt;/tr&gt;`;
+  }
+  document.querySelector('#table-body').innerHTML = html;
+
+  // 4) Refresh helper UI.
+  updateSortIndicators();
+  updatePagination();
+}</code></pre>
+
+      <h3>3c — Sorting</h3>
+<pre><code class="language-javascript">function sortBy(column) {
+  // Toggle direction when clicking same column.
+  if (sortColumn === column) {
+    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    // New column starts in ascending order.
+    sortColumn    = column;
+    sortDirection = 'asc';
+  }
+  // Jump back to first page after sorting.
+  currentPage = 1;
+  renderTable();
+}
+
+function updateSortIndicators() {
+  // Keep only the active arrow on the active column.
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === sortColumn) {
+      th.classList.add(sortDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}</code></pre>
+
+      <p>Update the <code>&lt;thead&gt;</code> to add <code>data-col</code> attributes and <code>onclick</code> handlers:</p>
+<pre><code class="language-html">&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th data-col="id"      onclick="sortBy('id')"&gt;ID&lt;/th&gt;
+    &lt;th data-col="name"    onclick="sortBy('name')"&gt;Name&lt;/th&gt;
+    &lt;th&gt;Type&lt;/th&gt;
+    &lt;th data-col="hp"      onclick="sortBy('hp')"&gt;HP&lt;/th&gt;
+    &lt;th data-col="attack"  onclick="sortBy('attack')"&gt;Attack&lt;/th&gt;
+    &lt;th data-col="defense" onclick="sortBy('defense')"&gt;Defense&lt;/th&gt;
+    &lt;th data-col="speed"   onclick="sortBy('speed')"&gt;Speed&lt;/th&gt;
+  &lt;/tr&gt;
+&lt;/thead&gt;</code></pre>
+
+      <h3>3d — Pagination</h3>
+<pre><code class="language-javascript">function updatePagination() {
+  const totalPages = Math.ceil(allPokemon.length / itemsPerPage);
+  const prevBtn    = document.querySelector('#prev-btn');
+  const nextBtn    = document.querySelector('#next-btn');
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+
+  let html = ''; // numbered page buttons
+  for (let i = 1; i &lt;= totalPages; i++) {
+    html += `&lt;button class="page-btn ${i === currentPage ? 'active' : ''}"
+                     onclick="goToPage(${i})"&gt;${i}&lt;/button&gt;`;
+  }
+  document.querySelector('#page-numbers').innerHTML = html;
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(allPokemon.length / itemsPerPage);
+  // Ignore invalid page requests.
+  if (page &lt; 1 || page &gt; totalPages) return;
+  currentPage = page;
+  renderTable();
+}
+</code></pre>
+      <p>Bind Previous and Next directly in HTML:</p>
+<pre><code class="language-html">&lt;button id="prev-btn" onclick="goToPage(currentPage - 1)"&gt;Previous&lt;/button&gt;
+&lt;button id="next-btn" onclick="goToPage(currentPage + 1)"&gt;Next&lt;/button&gt;</code></pre>
+
+      <h3>3e — Load data</h3>
+<pre><code class="language-javascript">async function loadPokemon() {
+  // Fetch dataset once, then render progressively.
+  for (let i = 1; i &lt;= 50; i++) {
+    const res  = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+    const data = await res.json();
+    allPokemon.push(data);
+    if (i % 10 === 0) renderTable();
+  }
+  renderTable();
+}
+
+loadPokemon();</code></pre>
+      <h3>3f — Interactive flow (what runs on each action)</h3>
+      <ul>
+        <li>Click column header: <code>sortBy(column)</code> updates <code>sortColumn</code>/<code>sortDirection</code>, resets page to 1, then calls <code>renderTable()</code>.</li>
+        <li>Click page button (or HTML-bound Next/Previous): <code>goToPage(page)</code> updates <code>currentPage</code>, then calls <code>renderTable()</code>.</li>
+        <li><code>renderTable()</code> always does the same pipeline: sort array → slice current page → render rows → refresh pagination UI.</li>
+      </ul>
+      <div class="note">The table now sorts on any column header click and paginates through all 50 entries.</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

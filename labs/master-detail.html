@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lab: Master-Detail Pattern</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    nav { background-color: blueviolet; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    nav a { color: white; text-decoration: none; border: 2px solid white; padding: 5px 14px; }
+    nav h1 { color: white; margin: 0; flex: 1; }
+    .lab { max-width: 860px; margin: 30px auto; padding: 0 20px 60px; }
+    h2 { border-bottom: 3px solid blueviolet; padding-bottom: 6px; }
+    h3 { color: blueviolet; }
+    p, li { line-height: 1.7; }
+    pre { margin: 0; }
+    .step { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; }
+    .step pre { border: 1px solid #eee; border-radius: 4px; overflow-x: auto; }
+    .note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <h1>Lab: Master-Detail Pattern</h1>
+  </nav>
+
+  <div class="lab">
+    <p>The <strong>Master-Detail</strong> pattern splits the screen into two panels. The left <em>master</em> panel shows a scrollable list; clicking an item loads its full details into the right <em>detail</em> panel. Tabs inside the detail panel let you switch between views of the data.</p>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <h2>Step 1 — HTML with Hardcoded Content</h2>
+      <p>Write the full two-panel layout with real hardcoded data — no JavaScript. The left panel is a <code>&lt;ul&gt;</code> of items; the right panel shows one item's details with a tab bar and a table.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Master Detail&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Home&lt;/a&gt;
+    &lt;h1&gt;Master Detail&lt;/h1&gt;
+  &lt;/nav&gt;
+
+  &lt;main&gt;
+
+    &lt;section id="master"&gt;
+      &lt;ul id="list"&gt;
+        &lt;li class="selected"&gt;
+          &lt;img src="https://pokedextr.uwista.dev/images/1.png"&gt;
+          Bulbasaur
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;img src="https://pokedextr.uwista.dev/images/4.png"&gt;
+          Charmander
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;img src="https://pokedextr.uwista.dev/images/7.png"&gt;
+          Squirtle
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/section&gt;
+
+    &lt;section id="detail"&gt;
+      &lt;img src="https://pokedextr.uwista.dev/images/1.png" alt="bulbasaur"&gt;
+      &lt;h2&gt;Bulbasaur&lt;/h2&gt;
+
+      &lt;div class="tabs"&gt;
+        &lt;button class="active"&gt;Info&lt;/button&gt;
+        &lt;button&gt;Stats&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;table&gt;
+        &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;    &lt;td&gt;1&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;th&gt;Type 1&lt;/th&gt;&lt;td&gt;Grass&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;th&gt;Type 2&lt;/th&gt;&lt;td&gt;Poison&lt;/td&gt;&lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+
+  &lt;/main&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      <div class="note">Open in a browser — you should see a list on the left and a detail card on the right. Clicking list items does nothing yet.</div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h2>Step 2 — CSS Styling</h2>
+      <p>Add a <code>&lt;style&gt;</code> block in <code>&lt;head&gt;</code>. Use <code>display: flex</code> on <code>&lt;main&gt;</code> so the two panels sit side by side. Give <code>#master</code> <code>overflow-y: auto</code> so it scrolls independently.</p>
+<pre><code class="language-html">&lt;style&gt;
+  * { box-sizing: border-box; }
+  body { font-family: sans-serif; margin: 0; }
+
+  nav {
+    background-color: blueviolet;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  nav h1 { color: white; margin: 0; flex: 1; }
+  nav a  { color: white; text-decoration: none;
+           border: 2px solid white; padding: 5px 14px; }
+
+  main {
+    display: flex;
+    height: calc(100vh - 46px);
+  }
+
+  #master {
+    flex: 1;
+    border-right: 2px solid #ccc;
+    overflow-y: auto;
+  }
+
+  #master ul { list-style: none; margin: 0; padding: 0; }
+
+  #master li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: capitalize;
+  }
+  #master li:hover    { background: #f0e6ff; }
+  #master li.selected { background: #ddd; }
+  #master li img { width: 40px; height: 40px; }
+
+  #detail {
+    flex: 6;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+  .tabs button { padding: 6px 16px; cursor: pointer;
+                 border: 1px solid #ccc; background: white; }
+  .tabs button.active { background: blueviolet; color: white; }
+
+  #detail img { width: 120px; height: 120px; }
+  #detail table { border-collapse: collapse; margin-top: 10px; }
+  #detail td, #detail th {
+    border: 1px solid #ccc;
+    padding: 6px 14px;
+    text-align: left;
+  }
+&lt;/style&gt;</code></pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h2>Step 3 — Dynamic Rendering with JavaScript</h2>
+      <p>Remove the hardcoded <code>&lt;li&gt;</code> items and the detail content. Leave both sections empty and add a <code>&lt;script&gt;</code> tag before <code>&lt;/body&gt;</code>.</p>
+      <p><strong>Interactive idea:</strong> keep state in variables (<code>currentId</code>, <code>currentTab</code>), then re-render from that state after every click.</p>
+
+      <h3>3a — Load data and render the list</h3>
+<pre><code class="language-javascript">let allPokemon = [];
+let currentId  = null;
+let currentTab = 'info';
+
+async function loadPokemon() {
+  // Load initial records for the master list.
+  for (let i = 1; i &lt;= 20; i++) {
+    const res  = await fetch(`https://pokedextr.uwista.dev/pokemon/${i}`);
+    const data = await res.json();
+    allPokemon.push(data);
+    renderList(); // show items as they arrive
+  }
+}
+
+function renderList() {
+  const ul = document.querySelector('#list');
+  // Rebuild list from current state.
+  let html = '';
+  for (let p of allPokemon) {
+    html += `&lt;li class="${p.id === currentId ? 'selected' : ''}"
+                onclick="selectPokemon(${p.id})"&gt;
+      &lt;img src="${p.image}" alt="${p.name}"&gt;
+      ${p.name}
+    &lt;/li&gt;`;
+  }
+  ul.innerHTML = html;
+}</code></pre>
+
+      <h3>3b — Show the detail panel</h3>
+<pre><code class="language-javascript">function selectPokemon(id) {
+  // Update selected item and reset tab.
+  currentId  = id;
+  currentTab = 'info';
+  // Re-render both panels to reflect state.
+  renderList();
+  renderDetail();
+}
+
+function renderDetail() {
+  // Find selected object from source array.
+  const pokemon = allPokemon.find(p => p.id === currentId);
+  if (!pokemon) return;
+
+  const detail = document.querySelector('#detail');
+
+  let tabContent = ''; // table markup for active tab
+  if (currentTab === 'info') {
+    tabContent = `&lt;table&gt;
+      &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;    &lt;td&gt;${pokemon.id}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;  &lt;td&gt;${pokemon.name}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Type 1&lt;/th&gt;&lt;td&gt;${pokemon.type1}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Type 2&lt;/th&gt;&lt;td&gt;${pokemon.type2 || '-'}&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;`;
+  } else {
+    tabContent = `&lt;table&gt;
+      &lt;tr&gt;&lt;th&gt;HP&lt;/th&gt;     &lt;td&gt;${pokemon.hp}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Attack&lt;/th&gt; &lt;td&gt;${pokemon.attack}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Defense&lt;/th&gt;&lt;td&gt;${pokemon.defense}&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;th&gt;Speed&lt;/th&gt;  &lt;td&gt;${pokemon.speed}&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;`;
+  }
+
+  detail.innerHTML = `
+    &lt;img src="${pokemon.image}" alt="${pokemon.name}"&gt;
+    &lt;h2&gt;${pokemon.name}&lt;/h2&gt;
+    &lt;div class="tabs"&gt;
+      &lt;button class="${currentTab === 'info'  ? 'active' : ''}" onclick="setTab('info')"&gt;Info&lt;/button&gt;
+      &lt;button class="${currentTab === 'stats' ? 'active' : ''}" onclick="setTab('stats')"&gt;Stats&lt;/button&gt;
+    &lt;/div&gt;
+    ${tabContent}
+  `;
+}
+
+function setTab(tab) {
+  // Only tab changes here, selected item stays.
+  currentTab = tab;
+  renderDetail();
+}
+
+loadPokemon();</code></pre>
+      <h3>3c — Interactive flow (what runs on each click)</h3>
+      <ul>
+        <li>Click list item: <code>selectPokemon(id)</code> updates selected ID, then calls <code>renderList()</code> and <code>renderDetail()</code>.</li>
+        <li>Click tab button: <code>setTab(tab)</code> updates only tab state, then calls <code>renderDetail()</code>.</li>
+        <li>UI is always rebuilt from state variables, so list highlight and detail content stay in sync.</li>
+      </ul>
+      <div class="note">Clicking a Pokémon in the list now loads its detail. The Info and Stats tabs re-render the detail panel without a page reload.</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>
